@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class CreateTransaction {
+public class CreateTransactionTest {
 
     @Autowired
     private MockMvc mockMvc;
