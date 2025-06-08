@@ -19,7 +19,9 @@ public class TransactionController {
 
     @PostMapping
     public ResponseEntity<TransactionResponseDTO> create(@RequestBody TransactionRequestDTO transactionRequestDTO) {
+        System.out.printf("[TransactionController.create] Start creation - transaction: %s%n", transactionRequestDTO);
         TransactionResponseDTO transactionResponseDTO = this.transactionService.create(transactionRequestDTO);
+        System.out.printf("[TransactionController.create] Successfully completed - %s%n", transactionResponseDTO);
         return ResponseEntity.ok(transactionResponseDTO);
     }
 }

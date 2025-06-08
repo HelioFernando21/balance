@@ -5,7 +5,6 @@ import com.bank.balance.domain.transaction.Transaction;
 import com.bank.balance.domain.transaction.TransactionRequestDTO;
 import com.bank.balance.domain.transaction.TransactionResponseDTO;
 import com.bank.balance.exception.BadRequestException;
-import com.bank.balance.exception.NotFoundException;
 import com.bank.balance.repositories.AccountRepository;
 import com.bank.balance.repositories.TransactionRepository;
 import com.bank.balance.utils.DateUtils;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -33,6 +31,7 @@ public class TransactionService {
         Transaction newTransaction = convertToTransaction(transactionRequestDTO, transactionAmount);
 
         Transaction saved = transactionRepository.save(newTransaction);
+        System.out.printf("[TransactionService.create] Successfully completed - transaction : %s%n", saved);
 
         return new TransactionResponseDTO(
                 saved.getAccountId(),
@@ -43,6 +42,7 @@ public class TransactionService {
     }
 
     private Transaction convertToTransaction(TransactionRequestDTO transactionRequestDTO, BigDecimal transactionAmount) {
+        System.out.println("[TransactionService.convertToTransaction] Start converting to transaction!");
         Transaction transaction = new Transaction();
         transaction.setAmount(transactionAmount);
         transaction.setAccountId(transactionRequestDTO.account_id());
@@ -52,6 +52,8 @@ public class TransactionService {
     }
 
     private void validateTransactionRequestDTO(TransactionRequestDTO transactionRequestDTO) {
+        System.out.println("[TransactionService.validateTransactionRequestDTO] Start validation!");
+
         if (transactionRequestDTO.operation_type_id() == null) {
             throw new BadRequestException("Invalid operation_type_id!");
         }
@@ -72,9 +74,12 @@ public class TransactionService {
         if (optionalAccount.isEmpty()) {
             throw new BadRequestException("Invalid account_id!");
         }
+
+        System.out.println("[TransactionService.validateTransactionRequestDTO] Validation completed!");
     }
 
     private BigDecimal convertTransactionAmountValue(BigDecimal amount, Long operationTypeId) {
+        System.out.println("[TransactionService.convertTransactionAmountValue] Start converting amount value!");
         if (amount.signum() < 0) {
             amount = amount.abs();
         }
