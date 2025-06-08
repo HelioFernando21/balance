@@ -50,3 +50,8 @@ After the application is running, you can verify the swagger:
 sudo docker compose up --build
 ```
 
+---
+
+## Documentation
+
+![Doc](balance-doc.png)
