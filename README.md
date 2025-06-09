@@ -6,9 +6,7 @@
 
 For building and running the application you need:
 
-- Java 21
 - Docker & Docker Compose
-- Maven Wrapper (`./mvnw`)
 
 ---
 
@@ -45,8 +43,6 @@ After the application is running, you can verify the swagger:
 ## Running the application locally
 
 ```shell
-./mvnw clean package
-
 sudo docker compose up --build
 ```
 

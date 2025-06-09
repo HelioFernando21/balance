@@ -1,24 +1,29 @@
-# JAVA 21
+# Step 1
+FROM eclipse-temurin:21-jdk-alpine AS build
+
+RUN apk add --no-cache bash curl git unzip
+
+COPY . /app
+WORKDIR /app
+
+RUN chmod +x mvnw
+
+RUN ./mvnw clean package
+
+# Step 2
 FROM eclipse-temurin:21-jdk-alpine
 
-
-# Set timezone environment variable
+# Set timezone
 ENV TZ=America/Sao_Paulo
 
-# Install tzdata and set timezone
-RUN apk add --no-cache tzdata && \
+RUN apk add --no-cache tzdata netcat-openbsd && \
     cp /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
     apk del tzdata
 
+COPY --from=build /app/target/*.jar app.jar
 
-ARG JAR_FILE=target/*.jar
-
-# Copy JAR
-COPY ${JAR_FILE} app.jar
 COPY wait-for-postgres.sh wait-for-postgres.sh
-RUN apk add --no-cache netcat-openbsd
-
 RUN chmod +x wait-for-postgres.sh
 
 # RUN JAR
