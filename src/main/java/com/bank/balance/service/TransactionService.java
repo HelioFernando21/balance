@@ -1,6 +1,7 @@
 package com.bank.balance.service;
 
 import com.bank.balance.domain.account.Account;
+import com.bank.balance.domain.operationType.OperationTypeEnum;
 import com.bank.balance.domain.transaction.Transaction;
 import com.bank.balance.domain.transaction.TransactionRequestDTO;
 import com.bank.balance.domain.transaction.TransactionResponseDTO;
@@ -58,7 +59,7 @@ public class TransactionService {
             throw new BadRequestException("Invalid operation_type_id!");
         }
 
-        if (transactionRequestDTO.operation_type_id() < 1 || transactionRequestDTO.operation_type_id() > 4) {
+        if (!OperationTypeEnum.contains(transactionRequestDTO.operation_type_id())) {
             throw new BadRequestException("Invalid operation_type_id!");
         }
 
@@ -84,7 +85,7 @@ public class TransactionService {
             amount = amount.abs();
         }
 
-        if (operationTypeId.equals(4L)) {
+        if (operationTypeId.equals(OperationTypeEnum.CREDIT_VOUCHER.getId())) {
             return amount.abs();
         }
 

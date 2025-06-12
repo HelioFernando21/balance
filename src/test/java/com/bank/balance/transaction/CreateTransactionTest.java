@@ -184,7 +184,7 @@ public class CreateTransactionTest {
     }
 
     @Test
-    void withEmptydOperationTypeId() throws Exception {
+    void withEmptyOperationTypeId() throws Exception {
         TransactionRequestDTO newTransactionRequestDTO = new TransactionRequestDTO(
                 mockedAccount.getId(),
                 null,

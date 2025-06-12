@@ -15,6 +15,8 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
+    private final int MAX_DOCUMENT_NUMBER = 11;
+
     @Autowired
     private AccountRepository accountRepository;
 
@@ -39,7 +41,7 @@ public class AccountService {
 
     private void validateAccount(AccountRequestDTO data) {
         System.out.println("[AccountService.validateAccount] Start validation!");
-        if (data.document_number() == null || data.document_number().isEmpty() || data.document_number().length() > 11) {
+        if (data.document_number() == null || data.document_number().isEmpty() || data.document_number().length() > MAX_DOCUMENT_NUMBER) {
             throw new BadRequestException("Invalid document_number!");
         }
         System.out.println("[AccountService.validateAccount] Validation completed!");
