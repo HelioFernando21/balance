@@ -3,12 +3,16 @@ package com.bank.balance.service;
 import com.bank.balance.domain.account.Account;
 import com.bank.balance.domain.account.AccountRequestDTO;
 import com.bank.balance.domain.account.AccountResponseDTO;
+import com.bank.balance.domain.availableCreditLimit.AvailableCreditLimit;
+import com.bank.balance.domain.availableCreditLimit.AvailableCreditLimitResponseDTO;
 import com.bank.balance.exception.BadRequestException;
 import com.bank.balance.exception.NotFoundException;
 import com.bank.balance.repositories.AccountRepository;
+import com.bank.balance.repositories.AvailableCreditLimitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -20,10 +24,28 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AvailableCreditLimitRepository availableCreditLimitRepository;
+
+    public AvailableCreditLimitResponseDTO getBalance(Long accountId) {
+        Optional<AvailableCreditLimit> optionalAccount = availableCreditLimitRepository.findById(accountId);
+        if (optionalAccount.isEmpty()) {
+            throw new BadRequestException("Invalid account_id!");
+        }
+
+        AvailableCreditLimit availableCreditLimit =  optionalAccount.get();
+        return new AvailableCreditLimitResponseDTO(availableCreditLimit.getAccountId(), availableCreditLimit.getAvailableCreditLimit());
+    }
+
     public AccountResponseDTO create(AccountRequestDTO data) {
         this.validateAccount(data);
 
         Account savedAccount = this.saveAccount(data.document_number());
+
+        AvailableCreditLimit availableCreditLimit = new AvailableCreditLimit(savedAccount.getId(), BigDecimal.valueOf(100));
+        this.availableCreditLimitRepository.save(availableCreditLimit);
+
+        this.availableCreditLimitRepository.findAll();
 
         System.out.printf("[AccountService.create] Successfully completed - account : %s%n", savedAccount);
         return new AccountResponseDTO(savedAccount.getId(), savedAccount.getDocumentNumber());

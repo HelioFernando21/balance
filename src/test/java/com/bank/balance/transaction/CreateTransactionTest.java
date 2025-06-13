@@ -1,9 +1,11 @@
 package com.bank.balance.transaction;
 
 import com.bank.balance.domain.account.Account;
+import com.bank.balance.domain.availableCreditLimit.AvailableCreditLimit;
 import com.bank.balance.domain.operationType.OperationType;
 import com.bank.balance.domain.transaction.TransactionRequestDTO;
 import com.bank.balance.repositories.AccountRepository;
+import com.bank.balance.repositories.AvailableCreditLimitRepository;
 import com.bank.balance.repositories.OperationTypeRepository;
 import com.bank.balance.utils.DateUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,19 +43,25 @@ public class CreateTransactionTest {
     @Autowired
     private OperationTypeRepository operationTypeRepository;
 
+    @Autowired
+    private AvailableCreditLimitRepository availableCreditLimitRepository;
+
     private Account mockedAccount;
 
     @BeforeEach()
     public void init() {
-        if (mockedAccount != null ) {
-            return;
-        }
         accountRepository.deleteAll();
+        availableCreditLimitRepository.deleteAll();
 
         Account account = new Account();
         account.setDocumentNumber("12345678900");
         mockedAccount = accountRepository.save(account);
 
+        availableCreditLimitRepository.save(new AvailableCreditLimit(mockedAccount.getId(), BigDecimal.valueOf(100)));
+
+        if (!operationTypeRepository.findAll().isEmpty()) {
+            return;
+        }
         List<OperationType> mockedOperationsTypes = Arrays.asList(
                 new OperationType(null, "Normal Purchase", LocalDateTime.now()),
                 new OperationType(null, "Purchase with installments", LocalDateTime.now()),

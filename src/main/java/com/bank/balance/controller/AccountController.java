@@ -2,6 +2,7 @@ package com.bank.balance.controller;
 
 import com.bank.balance.domain.account.AccountRequestDTO;
 import com.bank.balance.domain.account.AccountResponseDTO;
+import com.bank.balance.domain.availableCreditLimit.AvailableCreditLimitResponseDTO;
 import com.bank.balance.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +29,13 @@ public class AccountController {
         AccountResponseDTO newAccount = this.accountService.getById(id);
         System.out.printf("[AccountController.getById] Successfully completed - %s%n", newAccount);
         return ResponseEntity.ok(newAccount);
+    }
+
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<AvailableCreditLimitResponseDTO> getBalance(@PathVariable Long id) {
+        System.out.printf("[AccountController.getBalance] Start get - id: %s%n", id);
+        AvailableCreditLimitResponseDTO balance = this.accountService.getBalance(id);
+        System.out.printf("[AccountController.getBalance] Successfully completed - %s%n", balance);
+        return ResponseEntity.ok(balance);
     }
 }
